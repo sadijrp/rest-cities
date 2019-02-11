@@ -2,8 +2,8 @@ from django.db import models
 
 
 class City(models.Model):
-    ibge_id = models.IntegerField()
-    uf = models.CharField(max_length=2, unique=True)
+    ibge_id = models.IntegerField(unique=True)
+    uf = models.CharField(max_length=2)
     name = models.CharField(max_length=100)
     capital = models.BooleanField()
     lon = models.DecimalField(decimal_places=15, max_digits=20)

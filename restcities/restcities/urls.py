@@ -25,4 +25,5 @@ router.register(r'cities', views.CityViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('populate-db/', views.ImportCitiesView)
 ]
