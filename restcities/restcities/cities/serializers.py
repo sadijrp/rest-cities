@@ -1,5 +1,7 @@
-from .models import City
+
 from rest_framework import serializers
+
+from .models import City
 
 
 class CitySerializer(serializers.HyperlinkedModelSerializer):
@@ -8,3 +10,11 @@ class CitySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('ibge_id', 'uf', 'name', 'capital', 'lon', 'lat',
                   'no_accents', 'alternative_names', 'microregion',
                   'mesoregion')
+
+
+class CitiesCounterSerializer(serializers.HyperlinkedModelSerializer):
+    count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = City
+        fields = ('uf', 'count')

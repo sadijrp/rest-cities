@@ -13,7 +13,7 @@ def read_cities_from_file(file_path, delimiter):
 
     if file_path.strip()[-4:] == '.csv':  # processar apenas arquivos CSV
         try:
-            with open(file_path) as file:
+            with open(file_path, encoding='UTF-8', newline='') as file:
                 reader = csv.reader(file, delimiter=delimiter)
                 lines = 0
 

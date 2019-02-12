@@ -20,10 +20,12 @@ from rest_framework import routers
 from restcities.cities import views
 
 router = routers.DefaultRouter()
-router.register(r'cities', views.CityViewSet)
+router.register(r'cidades', views.CityViewSet)
+router.register(r'capitais', views.CapitalsViewSet)
+router.register(r'numero_cidades_por_estado', views.StateCitiesCounterViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('populate-db/', views.ImportCitiesView)
+    path('popula-bd/', views.ImportCitiesView)
 ]

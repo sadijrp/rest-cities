@@ -1,11 +1,13 @@
+
 import os
+from django.db.models import Count, Max
 
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import City
-from .serializers import CitySerializer
+from .serializers import CitySerializer, CitiesCounterSerializer
 from .csv_utils import read_cities_from_file
 from django.conf import settings
 
@@ -13,6 +15,22 @@ from django.conf import settings
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
+
+
+class CapitalsViewSet(viewsets.ModelViewSet):
+    """
+    Endpoint para retornar as capitais ordenadas pelo nome
+    """
+    queryset = City.objects.filter(capital=True).order_by('name')
+    serializer_class = CitySerializer
+
+
+class StateCitiesCounterViewSet(viewsets.ModelViewSet):
+    """
+    Endpoint para retornar o número de cidades por estado
+    """
+    queryset = City.objects.values('uf').annotate(count=Count('pk'))
+    serializer_class = CitiesCounterSerializer
 
 
 @api_view(['POST'])
