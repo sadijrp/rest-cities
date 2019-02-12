@@ -18,3 +18,9 @@ class CitiesCounterSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = City
         fields = ('uf', 'count')
+
+
+class StatesCitiesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = City
+        fields = ('name', )

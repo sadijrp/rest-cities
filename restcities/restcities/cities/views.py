@@ -2,19 +2,39 @@
 import os
 from django.db.models import Count, Max
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import City
-from .serializers import CitySerializer, CitiesCounterSerializer
 from .csv_utils import read_cities_from_file
 from django.conf import settings
+from .serializers import (CitySerializer, CitiesCounterSerializer,
+                          CitiesCounterSerializer, StatesCitiesSerializer)
 
 
 class CityViewSet(viewsets.ModelViewSet):
-    queryset = City.objects.all()
+    """
+    Endpoint para retornar as cidades
+    """
+    queryset = City.objects.filter(capital=True).order_by('name')
     serializer_class = CitySerializer
+
+    def retrieve(self, request, pk=None):
+        queryset = City.objects.filter(ibge_id=pk)
+        serializer = CitySerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        try:
+            instance = City.objects.get(ibge_id=pk)
+            self.perform_destroy(instance)
+            response_status = status.HTTP_200_OK
+        except:
+            response_status = status.HTTP_204_NO_CONTENT
+
+        return Response(status=response_status)
 
 
 class CapitalsViewSet(viewsets.ModelViewSet):
@@ -31,6 +51,31 @@ class StateCitiesCounterViewSet(viewsets.ModelViewSet):
     """
     queryset = City.objects.values('uf').annotate(count=Count('pk'))
     serializer_class = CitiesCounterSerializer
+
+
+class StateCitiesViewSet(viewsets.ModelViewSet):
+    """
+    Endpoint para retornar as cidades de um determinado estado
+    """
+    serializer_class = StatesCitiesSerializer
+
+    def get_queryset(self):
+        uf = self.kwargs['uf']
+        queryset = City.objects.filter(uf=uf)
+
+        return queryset
+
+
+class CitiesCounterViewSet(viewsets.ModelViewSet):
+    """
+    Endpoint para retornar a quantidade de cidades
+    """
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+
+    def list(self, request):
+        count = self.queryset.count()
+        return Response({'count': count})
 
 
 @api_view(['POST'])

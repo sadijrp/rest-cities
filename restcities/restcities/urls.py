@@ -20,9 +20,14 @@ from rest_framework import routers
 from restcities.cities import views
 
 router = routers.DefaultRouter()
-router.register(r'cidades', views.CityViewSet)
+router.register(r'cidades', views.CityViewSet,
+                basename="Cidade")
+router.register(r'cidades_por_estado/(?P<uf>[A-Z]{2})',
+                views.StateCitiesViewSet,
+                basename="Cidades de um Estado")
 router.register(r'capitais', views.CapitalsViewSet)
 router.register(r'numero_cidades_por_estado', views.StateCitiesCounterViewSet)
+router.register(r'quantidade_registros', views.CitiesCounterViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
